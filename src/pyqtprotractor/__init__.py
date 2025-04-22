@@ -217,7 +217,7 @@ class Protractor(QLabel):
         assert ev is not None
         # This probably isn't the correct way to handle modifier keys, but I
         # couldn't figure out how to get the modifier() method working
-        modifiers = (ev.nativeModifiers() - 16) & 4
+        modifiers = (ev.nativeModifiers() - 16)
 
         # Esc = Quit
         if ev.key() == Qt.Key_Escape:
@@ -226,6 +226,20 @@ class Protractor(QLabel):
         elif ev.key() == Qt.Key_X:
             self.angleInvert = not self.angleInvert
             self.updateDisplay()
+        # Ctrl+C
+        elif ev.key() == Qt.Key_C and modifiers & 4:
+            # https://stackoverflow.com/a/23119741/6335363
+            cb = QApplication.clipboard()
+            angleDeg = self.getAngle(self.angleInvert, False)
+            if modifiers & 1:
+                # Shift = round to 0 decimal places
+                angleDeg = round(angleDeg)
+            else:
+                # Otherwise, 2 decimal places
+                angleDeg = round(angleDeg, 2)
+            cb.clear(mode=cb.Clipboard)
+            toCopy = str(angleDeg)
+            cb.setText(toCopy, mode=cb.Clipboard)
         else:
             QWidget.keyPressEvent(self, ev)
 
