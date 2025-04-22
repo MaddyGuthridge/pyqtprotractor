@@ -110,6 +110,7 @@ class Handle(QLabel):
 
 class Protractor(QLabel):
     angleInvert = False
+    allowNegative = True
 
     def __init__(self, parent):
         super().__init__(parent, Qt.WindowType.FramelessWindowHint)
@@ -156,22 +157,24 @@ class Protractor(QLabel):
         self.angleInvert = not self.angleInvert
         self.updateDisplay()
 
-    def getAngle(self, invert: bool, useNegative: bool = True) -> float:
+    def getAngle(self) -> float:
         """
         Calculates and returns angle in degrees
         """
         angle = threePointAngle(self.handle1.pos(), self.handleC.pos(), self.handle2.pos())
         angleDeg = 180 * angle / math.pi
-        if invert:
+        if self.angleInvert:
             angleDeg = 180 - angleDeg
-        if angleDeg > 180 and useNegative:
-            angleDeg = angleDeg - 360
+        if angleDeg > 180:
+            angleDeg -= 360
+        if not self.allowNegative and angleDeg < 0:
+            angleDeg += 360
         return angleDeg
 
     def updateDisplay(self):
         self.placeLabel()
         self.adjustSize()
-        angleDeg = self.getAngle(self.angleInvert)
+        angleDeg = self.getAngle()
         self.label.setText("%0.2f °" % angleDeg)
         self.label.adjustSize()
         self.updateMask()
@@ -222,15 +225,19 @@ class Protractor(QLabel):
         # Esc = Quit
         if ev.key() == Qt.Key_Escape:
             QApplication.quit()
-        # X = Invert angle around 180
+        # X = Toggle invert angle around 180
         elif ev.key() == Qt.Key_X:
             self.angleInvert = not self.angleInvert
+            self.updateDisplay()
+        # N = Toggle negative angles
+        elif ev.key() == Qt.Key_N:
+            self.allowNegative = not self.allowNegative
             self.updateDisplay()
         # Ctrl+C
         elif ev.key() == Qt.Key_C and modifiers & 4:
             # https://stackoverflow.com/a/23119741/6335363
             cb = QApplication.clipboard()
-            angleDeg = self.getAngle(self.angleInvert, False)
+            angleDeg = self.getAngle()
             if modifiers & 1:
                 # Shift = round to 0 decimal places
                 angleDeg = round(angleDeg)
