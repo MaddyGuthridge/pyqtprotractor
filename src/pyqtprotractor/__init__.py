@@ -22,10 +22,9 @@
 
 import sys
 import math
-from PyQt5.Qt import Qt, QApplication, QGuiApplication, QObject, QWidget, QRegion
-from PyQt5.QtCore import QPoint, QPointF, QRect, QRectF, QSize, pyqtSignal
+from PyQt5.Qt import Qt, QApplication, QWidget
+from PyQt5.QtCore import QPoint, QPointF, QRectF, pyqtSignal
 from PyQt5.QtGui import QPainter, QPen
-from PyQt5.QtGui import QImage, QPixmap, QColor, QBitmap
 from PyQt5.QtWidgets import QLabel
 
 
