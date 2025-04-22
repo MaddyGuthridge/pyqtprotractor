@@ -102,7 +102,7 @@ class Handle(QLabel):
 
     def mousePressEvent(self, event):
         self.offset = event.pos()
-    
+
     def mouseMoveEvent(self, event):
         self.move(self.mapToParent(event.pos()) - self.offset)
         self.moved.emit()
@@ -195,7 +195,7 @@ class Protractor(QLabel):
         qp.begin(self)
         qp.setRenderHint(QPainter.Antialiasing)
         qp.setRenderHint(QPainter.HighQualityAntialiasing)
-        for pen in light, dark: 
+        for pen in light, dark:
             qp.setPen(pen)
             drawShortenedLine(qp, centerPoint(self.handleC), centerPoint(self.handle1), self.handleC.r() + 1, self.handle1.r() + 1)
             drawShortenedLine(qp, centerPoint(self.handleC), centerPoint(self.handle2), self.handleC.r() + 1, self.handle2.r() + 1)
@@ -207,16 +207,21 @@ class Protractor(QLabel):
         else:
             QWidget.keyPressEvent(self, event)
 
-a = QApplication(sys.argv)
+def main(argv):
+    a = QApplication(argv)
 
-widget = Protractor(None)
-widget.show()
+    widget = Protractor(None)
+    widget.show()
 
-# Negative coordinates are necessary because with (0,0) xfwm will place
-# the window on the current desktop and below the task bar.
-taskBarSize = 32
-allScreens = QApplication.desktop().geometry()
-widgetSize = allScreens.adjusted(-10, -taskBarSize, 10, taskBarSize)
-widget.setGeometry(widgetSize)
+    # Negative coordinates are necessary because with (0,0) xfwm will place
+    # the window on the current desktop and below the task bar.
+    taskBarSize = 32
+    allScreens = QApplication.desktop().geometry()
+    widgetSize = allScreens.adjusted(-10, -taskBarSize, 10, taskBarSize)
+    widget.setGeometry(widgetSize)
 
-a.exec()
+    a.exec()
+
+
+if __name__ == '__main__':
+    main(sys.argv)
