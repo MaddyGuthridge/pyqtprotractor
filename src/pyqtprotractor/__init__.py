@@ -74,7 +74,7 @@ class Handle(QLabel):
 
     def r(self): return self.width() / 4
 
-    def paintEvent(self, event):
+    def paintEvent(self, a0):
         dark = QPen(Qt.black, 1, Qt.SolidLine)
         light = QPen(Qt.white, 2, Qt.SolidLine)
         # light = QPen(QColor(200, 220, 255), 2, Qt.SolidLine)
@@ -99,11 +99,13 @@ class Handle(QLabel):
         qp.drawPoint(self.width()//2, self.height()//2)
         qp.end()
 
-    def mousePressEvent(self, event):
-        self.offset = event.pos()
+    def mousePressEvent(self, ev):
+        assert ev is not None
+        self.offset = ev.pos()
 
-    def mouseMoveEvent(self, event):
-        self.move(self.mapToParent(event.pos()) - self.offset)
+    def mouseMoveEvent(self, ev):
+        assert ev is not None
+        self.move(self.mapToParent(ev.pos()) - self.offset)
         self.moved.emit()
 
 class Protractor(QLabel):
@@ -130,23 +132,25 @@ class Protractor(QLabel):
         self.label.setAutoFillBackground(True)
         self.updateDisplay()
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, ev):
+        assert ev is not None
         self.setCursor(Qt.ClosedHandCursor)
-        self.offset = event.pos()
-        event.accept()
+        self.offset = ev.pos()
+        ev.accept()
 
-    def mouseMoveEvent(self, event):
-        diff = event.pos() - self.offset
+    def mouseMoveEvent(self, ev):
+        assert ev is not None
+        diff = ev.pos() - self.offset
         for widget in self.children():
             widget.move(widget.pos() + diff)
-        self.offset = event.pos()
+        self.offset = ev.pos()
         self.updateDisplay()
-        event.accept()
+        ev.accept()
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, ev):
         self.setCursor(Qt.OpenHandCursor)
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, ev):
         self.angleInvert = not self.angleInvert
         self.updateDisplay()
 
@@ -185,7 +189,7 @@ class Protractor(QLabel):
             mask = mask.united(r.toRect())
         self.setMask(mask)
 
-    def paintEvent(self, event):
+    def paintEvent(self, a0):
         dark = QPen(Qt.black, 1, Qt.SolidLine)
         light = QPen(Qt.white, 2, Qt.SolidLine)
         # light = QPen(QColor(200, 220, 255), 2, Qt.SolidLine)
@@ -200,11 +204,11 @@ class Protractor(QLabel):
             drawShortenedLine(qp, centerPoint(self.handleC), centerPoint(self.handle2), self.handleC.r() + 1, self.handle2.r() + 1)
         qp.end()
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
+    def keyPressEvent(self, ev):
+        if ev.key() == Qt.Key_Escape:
             QApplication.quit()
         else:
-            QWidget.keyPressEvent(self, event)
+            QWidget.keyPressEvent(self, ev)
 
 def main(argv):
     a = QApplication(argv)
