@@ -150,19 +150,28 @@ class Protractor(QLabel):
     def mouseReleaseEvent(self, ev):
         self.setCursor(Qt.OpenHandCursor)
 
-    def mouseDoubleClickEvent(self, ev):
+    def mouseDoubleClickEvent(self, a0):
+        # For some reason, I couldn't make this function get called, at least
+        # on my system (Gnome 47 on Fedora Linux)
         self.angleInvert = not self.angleInvert
         self.updateDisplay()
+
+    def getAngle(self, invert: bool, useNegative: bool = True) -> float:
+        """
+        Calculates and returns angle in degrees
+        """
+        angle = threePointAngle(self.handle1.pos(), self.handleC.pos(), self.handle2.pos())
+        angleDeg = 180 * angle / math.pi
+        if invert:
+            angleDeg = 180 - angleDeg
+        if angleDeg > 180 and useNegative:
+            angleDeg = angleDeg - 360
+        return angleDeg
 
     def updateDisplay(self):
         self.placeLabel()
         self.adjustSize()
-        angle = threePointAngle(self.handle1.pos(), self.handleC.pos(), self.handle2.pos())
-        angleDeg = 180 * angle / math.pi
-        if self.angleInvert:
-            angleDeg = 180 - angleDeg
-        if angleDeg > 180:
-            angleDeg = angleDeg - 360
+        angleDeg = self.getAngle(self.angleInvert)
         self.label.setText("%0.2f °" % angleDeg)
         self.label.adjustSize()
         self.updateMask()
@@ -205,8 +214,18 @@ class Protractor(QLabel):
         qp.end()
 
     def keyPressEvent(self, ev):
+        assert ev is not None
+        # This probably isn't the correct way to handle modifier keys, but I
+        # couldn't figure out how to get the modifier() method working
+        modifiers = (ev.nativeModifiers() - 16) & 4
+
+        # Esc = Quit
         if ev.key() == Qt.Key_Escape:
             QApplication.quit()
+        # X = Invert angle around 180
+        elif ev.key() == Qt.Key_X:
+            self.angleInvert = not self.angleInvert
+            self.updateDisplay()
         else:
             QWidget.keyPressEvent(self, ev)
 
