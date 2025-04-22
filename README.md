@@ -1,7 +1,11 @@
 # pyqtprotractor
-Multiplatform<sup>†</sup> protractor overlay tool for measuring angles on screen. 
+Multiplatform<sup>†</sup> protractor overlay tool for measuring angles on screen.
 
-Just install the required PyQt 5 (for example `pip install PyQt5`, maybe with `--user`) and then run `./protractor.py`. 
+Probably easiest to run with `uv`.
+
+```sh
+$ uv run pyqtprotractor
+```
 
 <sup>†</sup> *Tested only on Linux so far, but since it is written in Python and Qt if should be able run on Windows and Mac as well.*
 
@@ -11,7 +15,16 @@ Run `./protractor.py`. An overlay should appear in the top left corner of your s
 
 * You can move the individual points around by dragging them with the mouse.
 * You can move the whole protractor around without changing the angle by dragging the lines or the angle text box.
-* You can work "around" the protractor, for example click between the arms to draw something in the window below.
+* You can work "around" the protractor, for example click between the arms to draw something in the window below (unless you're using Gnome Wayland on Linux).
+
+### Keyboard shortcuts
+
+Probably broken on non-Linux platforms, but worth a try.
+
+* `X` = toggle inverting angle around 180 degrees
+* `N` = toggle allow negative values
+* `Ctrl+C` = copy value
+* `Ctrl+Shift+C` = copy value, rounded to nearest integer
 
 ## Example
 
