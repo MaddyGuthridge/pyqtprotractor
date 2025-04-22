@@ -210,8 +210,8 @@ class Protractor(QLabel):
         else:
             QWidget.keyPressEvent(self, ev)
 
-def main(argv):
-    a = QApplication(argv)
+def main():
+    a = QApplication(sys.argv)
 
     widget = Protractor(None)
     widget.show()
@@ -227,4 +227,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
