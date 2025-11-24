@@ -21,6 +21,10 @@
       inputs.uv2nix.follows = "uv2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    # Override packages to make them build properly
+    uv2nix_hammer_overrides.url = "github:TyberiusPrime/uv2nix_hammer_overrides";
+    uv2nix_hammer_overrides.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -29,6 +33,7 @@
       pyproject-nix,
       uv2nix,
       pyproject-build-systems,
+      uv2nix_hammer_overrides,
       ...
     }:
     let
@@ -56,6 +61,7 @@
         }).overrideScope
           (
             lib.composeManyExtensions [
+              (uv2nix_hammer_overrides.overrides pkgs)
               pyproject-build-systems.overlays.wheel
               overlay
             ]
